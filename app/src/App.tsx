@@ -6,6 +6,7 @@ import Board from './Board';
 import Tile from './Tile';
 
 import './App.css';
+import TileDecoration from './TileDecoration';
 
 function App() {
   const tiles: Array<Array<TileState>> = useMemo(() => {
@@ -17,7 +18,19 @@ function App() {
     for (let y = 1; y <= 4; y++) {
       for (let x = 1; x <= 6; x++) {
         arr.push((
-          <Tile tile={tiles[y][x]} />
+          <Tile x={x} y={y} tile={tiles[y][x]} key={`${x}/${y}`} />
+        ));
+      }
+    }
+    return arr;
+  }, [tiles]);
+
+  const renderDecorations: Array<ReactElement> = useMemo(() => {
+    const arr: Array<ReactElement> = [];
+    for (let y = 1; y <= 4; y++) {
+      for (let x = 1; x <= 6; x++) {
+        arr.push((
+          <TileDecoration x={x} y={y} tile={tiles[y][x]} key={`${x}/${y}`} />
         ));
       }
     }
@@ -34,6 +47,7 @@ function App() {
 
       <Board>
         {renderTiles}
+        {renderDecorations}
       </Board>
     </div>
   );

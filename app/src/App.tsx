@@ -1,13 +1,15 @@
 import React, { ReactElement, useEffect, useMemo, useState} from 'react';
 
-import { SolverStats, TileState } from './utils/types';
+import { TileState } from './utils/types';
 import { defaultBoard, parse } from './utils/AsciiBoard';
+
 import Board from './Board';
+import Marbology from './utils/MarbologySolver';
+import SolverUI from './SolverUI';
 import Tile from './Tile';
+import TileDecoration from './TileDecoration';
 
 import './App.css';
-import TileDecoration from './TileDecoration';
-import Marbology from './utils/MarbologySolver';
 
 function App() {
   const tiles: Array<Array<TileState>> = useMemo(() => {
@@ -38,29 +40,7 @@ function App() {
     return arr;
   }, [tiles]);
 
-
-  const [stats, setStats] = useState<SolverStats>({
-    status: 'NotStarted',
-    iterations: 0,
-    loops: 0,
-    branches: 0,
-    depth: 0,
-  });
-
-  useEffect(() => {
-    const solver = new Marbology(tiles);
-    do {
-      var stats = solver.step();
-      setStats(stats);
-
-      // Safety net
-      if (stats.iterations >= 100) {
-        return;
-      }
-    } while (stats && stats.status === 'Running');
-
-    //setStats(solver.getStats);
-  }, [tiles]);
+  const solver: Marbology = useMemo(() => new Marbology(tiles), [tiles]);
 
   return (
     <div className="App">
@@ -76,11 +56,7 @@ function App() {
       </Board>
 
       <footer className="App-footer">
-        <p>
-          Status: {stats.status}<br/>
-          {stats.message ? `Message: ${stats.message}<br/>` : null}
-          Iterations: {stats.iterations}<br/>
-        </p>
+        <SolverUI solver={solver} />
       </footer>
     </div>
   );

@@ -38,33 +38,13 @@ export default class Marbology {
     this._pushNewState(initialBoard, 0, 0);
   }
 
-  solve(): void {
-    this.stats = {
-      status: 'Running',
-      iterations: 0,
-      loops: 0,
-      branches: 0,
-      depth: 0,
-    };
-    do {
-      var stats = this.step();
-
-      // Safety net
-      if (stats.iterations === 100) {
-        return;
-      }
-    } while (stats && stats.status === 'Running');
-
-    console.log(`solve() completed, stats: `, stats);
-  }
-
-  step(): SolverStats{
+  step(): boolean {
     this.stats.status = 'Running';
 
     const state = this.statesToSearch.pop();
     if (!state) {
       this.stats.status = 'Error';
-      return this.stats; // can never happen, TODO: better way to handle this?
+      return false; // can never happen, TODO: better way to handle this?
     }
 
     /*
@@ -82,7 +62,7 @@ export default class Marbology {
       //console.log(AsciiBoard.render(state.board.tiles));
       console.log('Winning board!');
       this.stats.status = 'Done';
-      return this.stats;
+      return false;
     }
 
     const newMoves: Array<Move> = state.board.generateMoves();
@@ -107,7 +87,7 @@ export default class Marbology {
     });
 
     this.stats.depth = state.depth;
-    return this.stats;
+    return true;
   }
 
   getStats(): SolverStats {

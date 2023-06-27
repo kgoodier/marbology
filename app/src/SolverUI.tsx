@@ -1,5 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 
+import SolutionTree from './SolutionTree';
+
 import MarbologySolver from './utils/MarbologySolver';
 import { SolverStats } from './utils/types';
 import delay from './utils/delay';
@@ -66,6 +68,9 @@ export default function SolverUI({ solver }: { solver: MarbologySolver }) {
 
         <div>Unexplored</div>
         <div className='stats-value'>{unexplored}</div>
+      </div>
+      <div>
+        <SolutionTree />
       </div>
     </div>
   );

@@ -21,10 +21,15 @@
   font-size: calc(8px + 1vmin);
 }
 
+.App-body {
+  display: flex;
+  gap: 1em;
+  padding: .2em;
+}
+
 /* Neumorphic https://codepen.io/myacode/pen/PoqQQNM */
 
 /*
 $shadow: .3rem .3rem .6rem var(--greyLight-2), -.2rem -.2rem .5rem var(--white);
 $inner-shadow: inset .2rem .2rem .5rem var(--greyLight-2), inset -.2rem -.2rem .5rem var(--white);
 */
-

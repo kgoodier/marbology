@@ -50,14 +50,14 @@ function App() {
         </p>
       </header>
 
-      <Board>
-        {renderTiles}
-        {renderDecorations}
-      </Board>
-
-      <footer className="App-footer">
+      <div className="App-body">
         <SolverUI solver={solver} />
-      </footer>
+        <Board>
+          {renderTiles}
+          {renderDecorations}
+        </Board>
+      </div>
+
     </div>
   );
 }

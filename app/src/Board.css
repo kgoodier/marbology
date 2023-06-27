@@ -1,20 +1,22 @@
 /* Neumorphic https://codepen.io/myacode/pen/PoqQQNM */
 
 .container {
+  flex-grow: 1;
+
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Poppins', sans-serif;
   background: var(--greyLight-1);
-  
-  padding: 1rem;
+
+  padding: 0rem;
 }
 
 .components {
   width: 100%;
   border-radius: 1rem;
-  box-shadow: inset .5rem .5rem 1.2rem var(--greyLight-2), 
-              inset -.2rem -.2rem 1rem var(--white);
+  box-shadow: inset .5rem .5rem 1.2rem var(--greyLight-2),
+    inset -.2rem -.2rem 1rem var(--white);
   padding: 1rem;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -26,6 +28,3 @@
   align-items: center;
   */
 }
-
-
-

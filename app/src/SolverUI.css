@@ -1,0 +1,20 @@
+.solver-stats {
+    /* Create a 2 column grid */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: .1em;
+    /* Center the grid */
+    justify-items: right;
+    align-items: center;
+    /* Add some padding */
+    padding: .5em;
+    /* Add a border */
+    border: 1px solid black;
+    border-radius: 0.5em;
+    background-color: #f0f0f0;
+}
+
+.stats-value {
+    justify-self: left;
+    padding-left: 1em;
+}

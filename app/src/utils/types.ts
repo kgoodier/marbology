@@ -26,4 +26,5 @@ export type SolverStats = {
   loops: number,
   branches: number,
   depth: number,
+  unexplored: number,
 }

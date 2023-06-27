@@ -1,7 +1,6 @@
 /* Neumorphic https://codepen.io/myacode/pen/PoqQQNM */
 
 .container {
-  min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;

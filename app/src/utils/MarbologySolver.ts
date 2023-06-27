@@ -1,17 +1,18 @@
 import * as AsciiBoard from './AsciiBoard.js'
 import type { TileState, Move, SolverStats } from './types';
 import BoardSolver from './BoardSolver';
+import { assert } from 'console';
 
 type BoardRecord = {
   board: BoardSolver,
   boardNum: number,
   fromBoardNum: number,
-  depth: number
+  depth: number,
 };
 
 const verbose = false;
 
-export default class Marbology {
+export default class MarbologySolver {
   statesToSearch: Array<BoardRecord>;
   seenBoards: Map<string /*hash*/, number /*boardNum*/>;
   states: Map<number, BoardRecord>;
@@ -31,19 +32,21 @@ export default class Marbology {
       loops: 0,
       branches: 0,
       depth: 0,
+      unexplored: 0,
     };
 
     // Load initial board
     const initialBoard = new BoardSolver(tiles, undefined);
-    this._pushNewState(initialBoard, 0, 0);
+    this._pushNewState(initialBoard, 0, -1);
   }
 
   step(): boolean {
     this.stats.status = 'Running';
 
-    const state = this.statesToSearch.pop();
+    const state = this.statesToSearch.shift();
     if (!state) {
       this.stats.status = 'Error';
+      this.stats.message = `No more states to search!`;
       return false; // can never happen, TODO: better way to handle this?
     }
 
@@ -91,32 +94,12 @@ export default class Marbology {
   }
 
   getStats(): SolverStats {
-    return this.stats;
+    this.stats.unexplored = this.statesToSearch.length;
+    return { ...this.stats };
   }
 
   async printSolutionPath(): Promise<void> {
-    if (!this.winningBoard) {
-      console.log(`No winning board, please solve it first.`);
-      return Promise.reject('No winning board, please solve it first.');
-    }
-
-    const pathToParent: Array<BoardRecord> = [];
-    for (
-      var record: BoardRecord | undefined = this.winningBoard; 
-      ;
-      record = this.states.get(record.fromBoardNum)
-    ) {
-      if (!record) {
-        console.log(`Invalid board`);
-        return Promise.reject('Invalid board');
-      }
-      pathToParent.push(record);
-
-      // At the top, all done
-      if (record.boardNum === 0) {
-        break;
-      }
-    }
+    const pathToParent = this._getSolutionPath();
 
     const write = (str: string) => { process.stdout.write(str); }
     const cls = () => { write('\x1B[2J\r'); } // clear screen, set to 0,0
@@ -157,6 +140,26 @@ export default class Marbology {
     }
 
     return Promise.resolve();
+  }
+
+
+  _getSolutionPath(): Array<BoardRecord> {
+    if (!this.winningBoard) {
+      console.log(`No winning board, please solve it first.`);
+      return [];
+    }
+
+    const pathToParent: Array<BoardRecord> = [];
+    let record: BoardRecord | undefined = this.winningBoard;
+    while (record && record.fromBoardNum !== record.boardNum) {
+      pathToParent.push(record);
+      record = this.states.get(record.fromBoardNum);
+    }
+    if (record) {
+      pathToParent.push(record);  // push initial board
+    }
+
+    return pathToParent.reverse();
   }
 
   _pushNewState(board: BoardSolver, depth: number, fromBoardNum: number): BoardRecord | null {

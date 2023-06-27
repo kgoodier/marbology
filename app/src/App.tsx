@@ -1,10 +1,10 @@
-import React, { ReactElement, useEffect, useMemo, useState} from 'react';
+import React, { ReactElement, useEffect, useMemo, useState } from 'react';
 
 import { TileState } from './utils/types';
 import { defaultBoard, parse } from './utils/AsciiBoard';
 
 import Board from './Board';
-import Marbology from './utils/MarbologySolver';
+import MarbologySolver from './utils/MarbologySolver';
 import SolverUI from './SolverUI';
 import Tile from './Tile';
 import TileDecoration from './TileDecoration';
@@ -40,7 +40,7 @@ function App() {
     return arr;
   }, [tiles]);
 
-  const solver: Marbology = useMemo(() => new Marbology(tiles), [tiles]);
+  const solver: MarbologySolver = useMemo(() => new MarbologySolver(tiles), [tiles]);
 
   return (
     <div className="App">

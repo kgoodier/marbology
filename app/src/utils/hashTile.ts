@@ -1,6 +1,10 @@
 import type { TileState } from './types';
 
 export default function hashTile(tile: TileState): string {
+  return JSON.stringify(tile);
+}
+
+export function hashTileCustom(tile: TileState): string {
   if (tile.isEmpty) {
     return '????';
   }

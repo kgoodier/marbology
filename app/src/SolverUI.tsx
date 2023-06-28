@@ -3,12 +3,12 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import SolutionTree from './SolutionTree';
 
 import MarbologySolver from './utils/MarbologySolver';
-import { SolverStats } from './utils/types';
+import { BoardRecord, SolverStats, Solutions } from './utils/types';
 import delay from './utils/delay';
 
 import './SolverUI.css';
 
-export default function SolverUI({ solver }: { solver: MarbologySolver }) {
+export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
   const [status, setStatus] = useState('NotStarted');
   const [message, setMessage] = useState<string | undefined>('');
   const [iterations, setIterations] = useState(0);
@@ -16,37 +16,48 @@ export default function SolverUI({ solver }: { solver: MarbologySolver }) {
   const [branches, setBranches] = useState(0);
   const [depth, setDepth] = useState(0);
   const [unexplored, setUnexplored] = useState(0);
+  const [solutions, setSolutions] = useState<Solutions>(solver.getSolutions());
 
+  console.log('!!! render SolverUI');
 
-  useEffect(() => {
-    function gatherStats(stats: SolverStats) {
-      setStatus(stats.status);
-      setMessage(stats.message);
-      setIterations(stats.iterations);
-      setLoops(stats.loops);
-      setBranches(stats.branches);
-      setDepth(stats.depth);
-      setUnexplored(stats.unexplored);
-    }
+  function gatherStats(stats: SolverStats) {
+    setStatus(stats.status);
+    setMessage(stats.message);
+    setIterations(stats.iterations);
+    setLoops(stats.loops);
+    setBranches(stats.branches);
+    setDepth(stats.depth);
+    setUnexplored(stats.unexplored);
+  }
 
-    async function go() {
-      while (solver.step()) {
-        let stats = solver.getStats();
-        gatherStats(stats);
-        await delay(10);
-        // Safety net
-        if (stats.depth >= 4) {
-          return;
-        }
+  function step() {
+    const isMore = solver.step();
+    gatherStats(solver.getStats());
+    setSolutions(solver.getSolutions());
+  }
+
+  async function run() {
+    while (solver.step()) {
+      let stats = solver.getStats();
+      gatherStats(stats);
+      setSolutions(solver.getSolutions());
+      await delay(10);
+      // Safety net
+      if (stats.depth >= 6) {
+        return;
       }
-      gatherStats(solver.getStats());
     }
-
-    go();
-  }, [solver]);
+    console.log(`Actually done? Winning path: ${JSON.stringify(solver.getSolutionPath(), null, 2)}`);
+    console.log(`${JSON.stringify(solver.getStats())}`);
+    gatherStats(solver.getStats());
+  }
 
   return (
-    <div className='solver-ui'>
+    <div className='solver-container'>
+      <div>
+        <button onClick={step}>Step</button>
+        <button onClick={run}>Run</button>
+      </div>
       <div className='solver-stats'>
         <div>Status</div>
         <div className='stats-value'>{status}</div>
@@ -70,7 +81,7 @@ export default function SolverUI({ solver }: { solver: MarbologySolver }) {
         <div className='stats-value'>{unexplored}</div>
       </div>
       <div>
-        <SolutionTree />
+        <SolutionTree solutions={solutions} onSelect={onSelectBoard} />
       </div>
     </div>
   );

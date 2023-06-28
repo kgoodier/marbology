@@ -36,7 +36,8 @@ export default class BoardSolver {
     for (let y = 0; y < this.tiles.length; y++) {
       newTiles.push([]);
       for (let x = 0; x < this.tiles[y].length; x++) {
-        newTiles[y].push(this.tiles[y][x]);
+        // TODO: This is a shallow copy, but we need a deep copy if we're going to mutate the tiles.
+        newTiles[y].push({ ...this.tiles[y][x] });
       }
     }
     return new BoardSolver(newTiles, this.emptySpaces);
@@ -61,6 +62,7 @@ export default class BoardSolver {
         }
       }
     }
+    console.log(`!!! WE'RE DONE !!!`);
     return true;
   }
 
@@ -76,13 +78,13 @@ export default class BoardSolver {
       //console.log('  recordTileMoveIfValid', from, to);
       const tile: TileState = this.tiles[from.y][from.x];
       if (!tile.isEmpty) {
-        const move: Move = { from: {x: from.x, y: from.y}, to: {x: to.x, y: to.y}, type: 'tile' };
+        const move: Move = { from: { x: from.x, y: from.y }, to: { x: to.x, y: to.y }, type: 'tile' };
 
         // Normalize to top-most or left-most tile when has sibling
         if (tile.siblingDirection === 'left') {
           move.from.x--;
           move.to.x--;
-        } 
+        }
         if (tile.siblingDirection === 'top') {
           move.from.y--;
           move.to.y--;
@@ -101,17 +103,17 @@ export default class BoardSolver {
 
     this.emptySpaces.forEach(c => {
       // Direction of move, relative to tile
-      recordTileMoveIfValid({x: c.x, y: c.y - 1}, c);
-      recordTileMoveIfValid({x: c.x + 1, y: c.y}, c);
-      recordTileMoveIfValid({x: c.x, y: c.y + 1}, c);
-      recordTileMoveIfValid({x: c.x - 1, y: c.y}, c);
+      recordTileMoveIfValid({ x: c.x, y: c.y - 1 }, c);
+      recordTileMoveIfValid({ x: c.x + 1, y: c.y }, c);
+      recordTileMoveIfValid({ x: c.x, y: c.y + 1 }, c);
+      recordTileMoveIfValid({ x: c.x - 1, y: c.y }, c);
     });
 
     // Balls
     const ballPather = new BallPather(this.tiles);
     for (let y = 1; y < this.tiles.length - 1; y++) {
       for (let x = 1; x < this.tiles[y].length - 1; x++) {
-        const newMoves: Move[] = ballPather.explorePathsFrom({x, y});
+        const newMoves: Move[] = ballPather.explorePathsFrom({ x, y });
 
         // TOOD: see if move already existed & skip if so?
         newMoves.forEach(m => seenMoves.add(JSON.stringify(m)));
@@ -185,7 +187,7 @@ export default class BoardSolver {
     for (let y = 1; y < tiles.length - 1; y++) {
       for (let x = 1; x < tiles[y].length - 1; x++) {
         if (tiles[y][x].isEmpty) {
-          const c = {x, y};
+          const c = { x, y };
           //console.log(`  found empty space:`, c);
           emptySpaces.push(c);
         }

@@ -1,3 +1,8 @@
+.solver-container {
+    height: 100vh;
+    width: 33%;
+}
+
 .solver-stats {
     /* Create a 2 column grid */
     display: grid;

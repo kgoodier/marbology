@@ -1,5 +1,8 @@
+import BoardSolver from './BoardSolver';
+
 export type Direction = 'top' | 'right' | 'bottom' | 'left' | '';
 
+// This is mostly immutable, as it should be. Unfortunately the ballColor is mutable. TODO: fix this.
 export type TileState = {
   ballColor?: string, // single character for color, or undefined for no ball
   isEmpty: boolean, // no tile present in this board space
@@ -17,6 +20,19 @@ export type Move = {
   from: Coord,
   to: Coord,
   type: 'tile' | 'ball'
+};
+
+export type BoardRecord = {
+  name: string,
+  parent?: BoardRecord,
+  children: Array<BoardRecord>,
+  depth: number,
+  solver: BoardSolver,
+};
+
+export type Solutions = {
+  name: string,
+  children: Array<Solutions>,
 };
 
 export type SolverStats = {

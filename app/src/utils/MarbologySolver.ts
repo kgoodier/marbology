@@ -1,22 +1,16 @@
 import * as AsciiBoard from './AsciiBoard.js'
-import type { TileState, Move, SolverStats } from './types';
+import type { TileState, Move, BoardRecord, SolverStats, Solutions } from './types';
 import BoardSolver from './BoardSolver';
 import { assert } from 'console';
-
-type BoardRecord = {
-  board: BoardSolver,
-  boardNum: number,
-  fromBoardNum: number,
-  depth: number,
-};
 
 const verbose = false;
 
 export default class MarbologySolver {
   statesToSearch: Array<BoardRecord>;
-  seenBoards: Map<string /*hash*/, number /*boardNum*/>;
-  states: Map<number, BoardRecord>;
+  states: Map<string /*name*/, BoardRecord>;
+  seenBoards: Map<string /*hash*/, BoardRecord>;
   boardCount: number;
+  initialBoard: BoardRecord;
   winningBoard?: BoardRecord;
   stats: SolverStats;
 
@@ -36,8 +30,9 @@ export default class MarbologySolver {
     };
 
     // Load initial board
-    const initialBoard = new BoardSolver(tiles, undefined);
-    this._pushNewState(initialBoard, 0, -1);
+    const initialSolver = new BoardSolver(tiles, undefined);
+    this._pushNewState(initialSolver, undefined);
+    this.initialBoard = this.statesToSearch[0];
   }
 
   step(): boolean {
@@ -50,15 +45,7 @@ export default class MarbologySolver {
       return false; // can never happen, TODO: better way to handle this?
     }
 
-    /*
-    console.log(`===== ITER ${iter}, BOARD_NUM ${state.boardNum}, DEPTH ${this.statesToSearch.length} =====`);
-    if (verbose || iter === 0) {
-      console.log(state);
-      console.log(AsciiBoard.render(state.board.tiles));
-    }
-    */
-
-    if (state.board.isDone()) {
+    if (state.solver.isDone()) {
       this.winningBoard = state;
       console.log('\n===== DONE =====');
       console.log(state);
@@ -68,14 +55,14 @@ export default class MarbologySolver {
       return false;
     }
 
-    const newMoves: Array<Move> = state.board.generateMoves();
+    const newMoves: Array<Move> = state.solver.generateMoves();
     newMoves.forEach(newMove => {
-      const newBoards: Array<BoardSolver> = state.board.applyMove(newMove);
+      const newBoards: Array<BoardSolver> = state.solver.applyMove(newMove);
 
       // Go through all newly generated boards, add to list if not seen before.
       let c1 = this.boardCount;
       newBoards.forEach(newBoard => {
-        if (this._pushNewState(newBoard, state.depth + 1, state.boardNum)) {
+        if (this._pushNewState(newBoard, state)) {
           this.stats.branches++;
         } else {
           this.stats.loops++;
@@ -93,13 +80,46 @@ export default class MarbologySolver {
     return true;
   }
 
+  getBoard(name: string): BoardRecord | undefined {
+    return this.states.get(name);
+  }
+
   getStats(): SolverStats {
     this.stats.unexplored = this.statesToSearch.length;
     return { ...this.stats };
   }
 
+  getSolutions(): Solutions {
+    function remap(record: BoardRecord): Solutions {
+      return {
+        name: record.name,
+        children: record.children.map(remap),
+      };
+    }
+    return remap(this.initialBoard);
+  }
+
+  getSolutionPath(): Array<BoardRecord> {
+    if (!this.winningBoard) {
+      console.log(`No winning board, please solve it first.`);
+      return [];
+    }
+
+    const pathToParent: Array<BoardRecord> = [];
+    let record: BoardRecord | undefined = this.winningBoard;
+    while (record?.parent) {
+      pathToParent.push(record);
+      record = this.states.get(record.parent.name);
+    }
+    if (record) {
+      pathToParent.push(record);  // push initial board
+    }
+
+    return pathToParent.reverse();
+  }
+
   async printSolutionPath(): Promise<void> {
-    const pathToParent = this._getSolutionPath();
+    const pathToParent = this.getSolutionPath();
 
     const write = (str: string) => { process.stdout.write(str); }
     const cls = () => { write('\x1B[2J\r'); } // clear screen, set to 0,0
@@ -132,7 +152,7 @@ export default class MarbologySolver {
     for (let i = pathToParent.length - 1; i >= 0; i--) {
       const record = pathToParent[i];
       pos(0, 0);
-      write(`===== #${record.boardNum}, parent #${record.fromBoardNum}, depth ${record.depth} =====\x1B[K\n`);
+      write(`===== #${record.name}, parent #${record.parent?.name}, depth ${record.depth} =====\x1B[K\n`);
       //write(AsciiBoard.render(record.board.tiles));
       write('\n');
       //await sleep(500);
@@ -143,50 +163,40 @@ export default class MarbologySolver {
   }
 
 
-  _getSolutionPath(): Array<BoardRecord> {
-    if (!this.winningBoard) {
-      console.log(`No winning board, please solve it first.`);
-      return [];
-    }
 
-    const pathToParent: Array<BoardRecord> = [];
-    let record: BoardRecord | undefined = this.winningBoard;
-    while (record && record.fromBoardNum !== record.boardNum) {
-      pathToParent.push(record);
-      record = this.states.get(record.fromBoardNum);
-    }
-    if (record) {
-      pathToParent.push(record);  // push initial board
-    }
-
-    return pathToParent.reverse();
-  }
-
-  _pushNewState(board: BoardSolver, depth: number, fromBoardNum: number): BoardRecord | null {
+  _pushNewState(board: BoardSolver, parentBoard: BoardRecord | undefined): BoardRecord | null {
     const hash = board.hash();
-    const boardNum = this.seenBoards.get(hash);
-    if (!boardNum) {
-      const record: BoardRecord = {
-        board,
-        boardNum: this.boardCount++,
-        fromBoardNum,
-        depth
-      };
-      this.states.set(record.boardNum, record);
-      this.statesToSearch.push(record);
-      this.seenBoards.set(hash, record.boardNum);
+    const oldRecord = this.seenBoards.get(hash);
+
+    // Don't explore further if we've already seen this board state.
+    if (oldRecord) {
       if (verbose) {
-        const boardNumStr = ("0000" + record.boardNum.toString()).substr(-4);
-        console.log(`[B${boardNumStr}] New board: YES from:${record.fromBoardNum} num:${record.boardNum} hash:${hash}`);
-      }
-      return record;
-    } else {
-      if (verbose) {
-        const boardNumStr = ("0000" + boardNum.toString()).substr(-4);
-        console.log(`[B${boardNumStr}] New board: NO from:${fromBoardNum} hash:${hash}`);
+        const boardNumStr = ("0000" + oldRecord.name.toString()).substr(-4);
+        console.log(`[B${boardNumStr}] New board: NO from:${parentBoard?.name} hash:${hash}`);
       }
       return null;
     }
+
+    const boardNum = this.boardCount++;
+    const record: BoardRecord = {
+      name: `${boardNum}`,
+      solver: board,
+      parent: parentBoard,
+      depth: parentBoard ? (parentBoard.depth + 1) : 0,
+      children: []
+    };
+    this.states.set(record.name, record);
+    this.statesToSearch.push(record);
+    this.seenBoards.set(hash, record);
+    if (parentBoard) {
+      parentBoard.children.push(record);
+    }
+
+    if (verbose) {
+      const boardNumStr = ("0000" + record.name).substr(-4);
+      console.log(`[B${boardNumStr}] New board: YES from:${parentBoard?.name} num:${record.name} hash:${hash}`);
+    }
+    return record;
   }
 
 }

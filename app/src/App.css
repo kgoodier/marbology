@@ -23,6 +23,7 @@
 
 .App-body {
   display: flex;
+  align-items: flex-start;
   gap: 1em;
   padding: .2em;
 }

@@ -17,7 +17,7 @@ function directionToOffset(dir?: Direction): Coord {
   }
 }
 
-export default class BoardSolver {
+export default class BoardConfiguration {
   tiles: Array<Array<TileState>>
   emptySpaces: Array<Coord>
 
@@ -31,7 +31,7 @@ export default class BoardSolver {
     }
   }
 
-  clone(): BoardSolver {
+  clone(): BoardConfiguration {
     const newTiles: Array<Array<TileState>> = [];
     for (let y = 0; y < this.tiles.length; y++) {
       newTiles.push([]);
@@ -40,7 +40,7 @@ export default class BoardSolver {
         newTiles[y].push({ ...this.tiles[y][x] });
       }
     }
-    return new BoardSolver(newTiles, this.emptySpaces);
+    return new BoardConfiguration(newTiles, this.emptySpaces);
   }
 
   hash(): string {
@@ -57,12 +57,11 @@ export default class BoardSolver {
     for (let y = 1; y < this.tiles.length - 1; y++) {
       for (let x = 1; x < this.tiles[y].length - 1; x++) {
         const tile = this.tiles[y][x];
-        if (tile.ballColor && tile.ballColor !== tile.divotColor) {
+        if (!tile.isEmpty && tile.ballColor && tile.ballColor !== tile.divotColor) {
           return false;
         }
       }
     }
-    console.log(`!!! WE'RE DONE !!!`);
     return true;
   }
 
@@ -128,8 +127,8 @@ export default class BoardSolver {
     return moves;
   }
 
-  applyMove(move: Move): Array<BoardSolver> {
-    const boards: Array<BoardSolver> = [];
+  applyMove(move: Move): Array<BoardConfiguration> {
+    const boards: Array<BoardConfiguration> = [];
     if (this._isMoveValid(move)) {
       const board = this.clone();
       board.doMove(move)

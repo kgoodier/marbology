@@ -1,4 +1,4 @@
-import BoardSolver from './BoardSolver';
+import BoardConfiguration from './BoardConfiguration';
 
 export type Direction = 'top' | 'right' | 'bottom' | 'left' | '';
 
@@ -22,12 +22,13 @@ export type Move = {
   type: 'tile' | 'ball'
 };
 
-export type BoardRecord = {
+export type SolutionState = {
   name: string,
-  parent?: BoardRecord,
-  children: Array<BoardRecord>,
+  parent?: SolutionState,
+  children: Array<SolutionState>,
   depth: number,
-  solver: BoardSolver,
+  board: BoardConfiguration,
+  move?: Move
 };
 
 export type Solutions = {

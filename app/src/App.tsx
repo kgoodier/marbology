@@ -18,7 +18,7 @@ function App() {
   const handleSelectBoard = useCallback((name: string) => {
     const board = solver.getBoard(name);
     if (board) {
-      setTiles(board.solver.tiles);
+      setTiles(board.board.tiles);
     }
   }, [solver]);
 

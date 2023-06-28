@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import SolutionTree from './SolutionTree';
 
 import MarbologySolver from './utils/MarbologySolver';
-import { BoardRecord, SolverStats, Solutions } from './utils/types';
+import { SolutionState, SolverStats, Solutions } from './utils/types';
 import delay from './utils/delay';
 
 import './SolverUI.css';

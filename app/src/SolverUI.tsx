@@ -47,7 +47,7 @@ export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologyS
         return;
       }
     }
-    console.log(`Actually done? Winning path: ${JSON.stringify(solver.getSolutionPath(), null, 2)}`);
+    console.log(`Winning path:`, solver.getSolutionPath());
     console.log(`${JSON.stringify(solver.getStats())}`);
     gatherStats(solver.getStats());
   }

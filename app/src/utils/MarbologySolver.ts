@@ -44,7 +44,7 @@ export default class MarbologySolver {
       return false; // can never happen, TODO: better way to handle this?
     }
 
-    if (this._checkIsDone(state.board)) {
+    if (this._checkIsDone(state)) {
       return false;
     }
 
@@ -58,7 +58,7 @@ export default class MarbologySolver {
       newBoards.forEach(newBoard => {
         if (this._pushNewState(newBoard, state)) {
           this.stats.branches++;
-          if (this._checkIsDone(newBoard)) {
+          if (this._checkIsDone(state)) {
             isDone = true;
           }
         } else {
@@ -77,12 +77,12 @@ export default class MarbologySolver {
     return !isDone;
   }
 
-  _checkIsDone(board: BoardConfiguration): boolean {
-    if (board.isDone()) {
-      this.winningState = this.states.get(board.hash());
+  _checkIsDone(state: SolutionState): boolean {
+    if (state.board.isDone()) {
+      this.winningState = this.states.get(state.name);
       this.stats.status = 'Done';
       console.log('\n===== DONE =====');
-      console.log(this.winningState);
+      //console.log(this.winningState);
       return true;
     }
     return false;

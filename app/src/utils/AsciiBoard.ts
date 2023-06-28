@@ -91,7 +91,7 @@ export const defaultBoard000_debugging2 = `
 ..... ........... ..... ..... .....
 `;
 
-export const defaultBoard = defaultBoard000_debugging2;
+export const defaultBoard = defaultBoard000_debugging;
 
 const TILES_W = 6; // tiles
 const TILES_H = 4; // tiles

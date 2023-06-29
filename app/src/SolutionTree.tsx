@@ -1,38 +1,24 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, memo, useEffect, useState } from 'react';
 
 import ReactECharts from 'echarts-for-react';
 import { Solutions } from './utils/types';
 
-export default function SolutionTree({ solutions, onSelect }: { solutions?: Solutions, onSelect?: (name: string) => void }) {
+type SolutionTreeProps = {
+  solutions?: Solutions,
+  onSelect?: (name: string) => void,
+  onDebug?: (name: string) => void,
+};
+
+const SolutionTree = memo(function SolutionTree({ solutions, onSelect, onDebug }: SolutionTreeProps) {
   if (!solutions) {
     return null;
   }
 
   console.log('!!! render SolutionTree');
 
-  const data = {
-    name: "1",    // the name of the node, the text corresponding to the current node label.
-    children: [
-      {
-        name: "2",
-        //collapsed: null, // If set as `true`, the node is collapsed in the initialization.
-        children: [
-          {
-            name: "4"
-          },
-          {
-            name: "5"
-          }
-        ]
-      },
-      {
-        name: "3",
-      }
-    ]
-  };
   const options = {
     tooltip: {
-      show: true,
+      show: false,
       trigger: 'item',
       triggerOn: 'click'
     },
@@ -40,10 +26,15 @@ export default function SolutionTree({ solutions, onSelect }: { solutions?: Solu
       {
         type: 'tree',
         data: [solutions],
+        top: '4%',
+        right: '4%',
+        bottom: '4%',
+        left: '4%',
         symbol: 'emptyCircle',
         symbolSize: 20,
         orient: 'vertical',
-        expandAndCollapse: true,
+        expandAndCollapse: false,
+        initialTreeDepth: 6,
         animationDurationUpdate: 250,
         roam: true,
         label: {
@@ -51,57 +42,42 @@ export default function SolutionTree({ solutions, onSelect }: { solutions?: Solu
           verticalAlign: 'middle',
           fontSize: 9
         },
+        emphasis: {
+          focus: 'ancestor',
+        },
+        /*
         selectedMode: 'single',
         select: {
           itemStyle: {
-            color: 'red'
+            color: 'blue'
           },
-          label: {
-            show: true
-          }
         }
+        */
       }
     ]
   };
 
-  const onSelectChanged = (params: any) => {
-    if (params.fromAction === 'select') {
-      console.log(params);
+  const handleDebugInfo = (params: any) => {
+    if (params.componentType === 'series') {
+      onDebug && onDebug(params.data.name);
     }
   }
 
-  const onClick = (params: any) => {
+  const handleSelect = (params: any) => {
     if (params.componentType === 'series') {
-      // DEBUGGING
-      console.log(params);
-
-      /*
-      // Build array of children
-      function mapChildren(node: any) {
-        if (!node.children) {
-          return [];
-        }
-        return node.children.map((child: any) => {
-          return {
-            name: child.name,
-            children: mapChildren(child)
-          };
-        });
-      }
-      const children = mapChildren(params.data);
-      const ancestors = params.treeAncestors.map((node: any) => node.name);
-      console.log(ancestors, children);
-      */
-
       onSelect && onSelect(params.data.name);
     }
   }
 
   return <ReactECharts
     option={options}
+    style={{ height: '100%', width: '100%' }}
     onEvents={{
-      'mouseover': onClick,
-      'selectchanged': onSelectChanged
+      'mouseover': handleSelect,
+      'click': handleDebugInfo,
     }}
   />;
-}
+});
+
+export default SolutionTree;
+

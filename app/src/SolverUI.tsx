@@ -1,14 +1,15 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import SolutionTree from './SolutionTree';
 
 import MarbologySolver from './utils/MarbologySolver';
 import { SolutionState, SolverStats, Solutions } from './utils/types';
+import { renderDebug } from './utils/AsciiBoard';
 import delay from './utils/delay';
 
 import './SolverUI.css';
 
-export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
+const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
   const [status, setStatus] = useState('NotStarted');
   const [message, setMessage] = useState<string | undefined>('');
   const [iterations, setIterations] = useState(0);
@@ -17,8 +18,6 @@ export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologyS
   const [depth, setDepth] = useState(0);
   const [unexplored, setUnexplored] = useState(0);
   const [solutions, setSolutions] = useState<Solutions>(solver.getSolutions());
-
-  console.log('!!! render SolverUI');
 
   function gatherStats(stats: SolverStats) {
     setStatus(stats.status);
@@ -40,16 +39,27 @@ export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologyS
     while (solver.step()) {
       let stats = solver.getStats();
       gatherStats(stats);
-      setSolutions(solver.getSolutions());
-      await delay(10);
+      //setSolutions(solver.getSolutions());
+      //await delay(10);
       // Safety net
-      if (stats.depth >= 6) {
+      if (stats.depth > 20) {
+        setSolutions(solver.getSolutions());
         return;
       }
     }
     console.log(`Winning path:`, solver.getSolutionPath());
     console.log(`${JSON.stringify(solver.getStats())}`);
     gatherStats(solver.getStats());
+    setSolutions(solver.getSolutions());
+  }
+
+  function handleDebugBoard(name: string) {
+    if (solver) {
+      const state = solver.getBoard(name);
+      if (state) {
+        console.log(renderDebug(state.board.tiles));
+      }
+    }
   }
 
   return (
@@ -80,9 +90,11 @@ export default function SolverUI({ solver, onSelectBoard }: { solver: MarbologyS
         <div>Unexplored</div>
         <div className='stats-value'>{unexplored}</div>
       </div>
-      <div>
-        <SolutionTree solutions={solutions} onSelect={onSelectBoard} />
+      <div className='solver-tree'>
+        <SolutionTree solutions={solutions} onSelect={onSelectBoard} onDebug={handleDebugBoard} />
       </div>
     </div>
   );
-}
+});
+
+export default SolverUI;

@@ -6,37 +6,34 @@ import { assert } from 'console';
 const verbose = false;
 
 export default class MarbologySolver {
-  statesToSearch: Array<SolutionState>;
-  states: Map<string /*name*/, SolutionState>;
-  statesSeen: Map<string /*hash*/, SolutionState>;
-  boardCount: number;
+  statesToSearch: Array<SolutionState> = [];
+  states: Map<string /*name*/, SolutionState> = new Map();
+  statesSeen: Map<string /*hash*/, SolutionState> = new Map();
+  boardCount: number = 0;
   initialState: SolutionState;
-  winningState?: SolutionState;
-  stats: SolverStats;
+  winningState?: SolutionState = undefined;
+  winningSolution: Array<SolutionState> = [];
+  stats: SolverStats = {
+    status: 'NotStarted',
+    iterations: 0,
+    loops: 0,
+    branches: 0,
+    depth: 0,
+    unexplored: 0,
+  };
 
   constructor(tiles: TileState[][]) {
-    this.statesToSearch = [];
-    this.statesSeen = new Map();
-    this.states = new Map();
-    this.boardCount = 0;
-    this.winningState = undefined;
-    this.stats = {
-      status: 'NotStarted',
-      iterations: 0,
-      loops: 0,
-      branches: 0,
-      depth: 0,
-      unexplored: 0,
-    };
-
     // Load initial board
     this._pushNewState(new BoardConfiguration(tiles, undefined));
     this.initialState = this.statesToSearch[0];
   }
 
   step(): boolean {
-    this.stats.status = 'Running';
+    if (this.stats.status === 'Done') {
+      return false;
+    }
 
+    this.stats.status = 'Running';
     const state = this.statesToSearch.shift();
     if (!state) {
       this.stats.status = 'Error';
@@ -79,10 +76,9 @@ export default class MarbologySolver {
 
   _checkIsDone(state: SolutionState): boolean {
     if (state.board.isDone()) {
-      this.winningState = this.states.get(state.name);
       this.stats.status = 'Done';
-      console.log('\n===== DONE =====');
-      //console.log(this.winningState);
+      this.winningState = state;
+      this.winningSolution = this.getSolutionPath(state);
       return true;
     }
     return false;
@@ -98,42 +94,60 @@ export default class MarbologySolver {
   }
 
   getSolutions(): Solutions {
-    function remap(record: SolutionState): Solutions {
-      return {
-        name: record.name,
-        children: record.children.map(remap),
-      };
+    if (this.winningSolution.length > 0) {
+      // We have a solution, so return a single path.
+      function arrayToTree(array: Array<SolutionState>): Solutions {
+        const root: Solutions = {
+          name: 'root',
+          children: [],
+        };
+        let current = root;
+        array.forEach(state => {
+          current.children.push({
+            name: state.name,
+            children: []
+          });
+          current = current.children[0];
+        });
+        return root.children[0];
+      }
+      return arrayToTree(this.winningSolution);
+    } else {
+      // We don't have a solution, so return the whole tree.
+      const statesToSearchSet = new Set(this.statesToSearch);
+      function remap(record: SolutionState): Solutions {
+        const node: Solutions = {
+          name: record.name,
+          children: record.children.map(remap),
+        };
+        if (statesToSearchSet.has(record)) {
+          node.itemStyle = { color: 'lightgreen' };
+          node.tooltip = "to be explored";
+        }
+        return node;
+      }
+      return remap(this.initialState);
     }
-    return remap(this.initialState);
   }
 
-  getSolutionPath(): Array<SolutionState> {
-    if (!this.winningState) {
-      console.log(`No winning board, please solve it first.`);
-      return [];
-    }
-
+  getSolutionPath(endState: SolutionState | undefined = this.winningState): Array<SolutionState> {
     const pathToParent: Array<SolutionState> = [];
-    let record: SolutionState | undefined = this.winningState;
-    while (record?.parent) {
-      pathToParent.push(record);
-      record = this.states.get(record.parent.name);
+    let state = endState;
+    while (state) {
+      pathToParent.push(state);
+      state = state.parent;
     }
-    if (record) {
-      pathToParent.push(record);  // push initial board
-    }
-
     return pathToParent.reverse();
   }
 
   _pushNewState(board: BoardConfiguration, parentBoard?: SolutionState, move?: Move): SolutionState | null {
     const hash = board.hash();
-    const oldRecord = this.statesSeen.get(hash);
+    const priorState = this.statesSeen.get(hash);
 
     // Don't explore further if we've already seen this board state.
-    if (oldRecord) {
+    if (priorState) {
       if (verbose) {
-        const boardNumStr = ("0000" + oldRecord.name.toString()).substr(-4);
+        const boardNumStr = ("0000" + priorState.name.toString()).substr(-4);
         console.log(`[B${boardNumStr}] New board: NO from:${parentBoard?.name} hash:${hash}`);
       }
       return null;

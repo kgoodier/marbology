@@ -152,7 +152,11 @@ export default class BoardConfiguration {
 
         this.tiles[move.to.y][move.to.x] = fromTile;
         this.tiles[move.to.y + sibDelta.y][move.to.x + sibDelta.x] = fromSibTile;
-        if (toTile.isEmpty) {
+
+        if (toTile.isEmpty && toSibTile.isEmpty) {
+          this.tiles[move.from.y][move.from.x] = toTile;
+          this.tiles[move.from.y + sibDelta.y][move.from.x + sibDelta.x] = toSibTile;
+        } else if (toTile.isEmpty) {
           this.tiles[move.from.y + sibDelta.y][move.from.x + sibDelta.x] = toTile;
         } else if (toSibTile.isEmpty) {
           this.tiles[move.from.y][move.from.x] = toSibTile;

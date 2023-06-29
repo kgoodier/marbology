@@ -36,31 +36,36 @@ export default class BallPather {
     this.seenTiles.add(tile);
 
     if (tile.exits[0]) {
-      moves.push(...this._moveBall(from, { x: from.x, y: from.y - 1 }));
+      moves.push(...this._moveBall(from, { x: from.x, y: from.y - 1 }, 0));
     }
     if (tile.exits[1]) {
-      moves.push(...this._moveBall(from, { x: from.x + 1, y: from.y }));
+      moves.push(...this._moveBall(from, { x: from.x + 1, y: from.y }, 1));
     }
     if (tile.exits[2]) {
-      moves.push(...this._moveBall(from, { x: from.x, y: from.y + 1 }));
+      moves.push(...this._moveBall(from, { x: from.x, y: from.y + 1 }, 2));
     }
     if (tile.exits[3]) {
-      moves.push(...this._moveBall(from, { x: from.x - 1, y: from.y }));
+      moves.push(...this._moveBall(from, { x: from.x - 1, y: from.y }, 3));
     }
     return moves;
   }
 
-  _moveBall(from: Coord, to: Coord): Array<Move> {
+  _moveBall(from: Coord, to: Coord, exitIndex: number): Array<Move> {
     const tile = this.tiles[to.y][to.x];
 
     if (this.seenTiles.has(tile)) {
       // Already been here, bail
       return [];
     }
-    this.seenTiles.add(tile);
 
     // Does the "to" tile have a ball already? Bail.
     if (tile.ballColor) {
+      return [];
+    }
+
+    // Does the "to" tile have an entrance?
+    const entranceIndex = (exitIndex + 2) % 4;
+    if (!tile.exits[entranceIndex]) {
       return [];
     }
 
@@ -69,6 +74,8 @@ export default class BallPather {
       const move: Move = { from: from, to, type: 'ball' };
       return [move];
     }
+
+    this.seenTiles.add(tile);
 
     // Should be exits if there is no divot, so let's go check them recursively
     return this._exploreExits(to);

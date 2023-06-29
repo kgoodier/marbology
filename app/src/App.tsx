@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TileState } from './utils/types';
-import { defaultBoard, parse, renderDebug } from './utils/AsciiBoard';
+import { defaultBoard, parse } from './utils/AsciiBoard';
 
 import Board from './Board';
 import MarbologySolver from './utils/MarbologySolver';
@@ -21,8 +21,6 @@ function App() {
       setTiles(board.board.tiles);
     }
   }, [solver]);
-
-  renderDebug(tiles);
 
   return (
     <div className="App">

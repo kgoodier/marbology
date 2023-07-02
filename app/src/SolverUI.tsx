@@ -10,6 +10,8 @@ import delay from './utils/delay';
 import './SolverUI.css';
 
 const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
+  console.log(`render SolverUI`, solver);
+
   const [status, setStatus] = useState('NotStarted');
   const [message, setMessage] = useState<string | undefined>('');
   const [iterations, setIterations] = useState(0);
@@ -30,8 +32,17 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
   }
 
   function step() {
-    const isMore = solver.step();
-    gatherStats(solver.getStats());
+    // Step 1 level deeper
+    const currentDepth = depth;
+    let keepGoing = true;
+    while (keepGoing) {
+      keepGoing = solver.step();
+      const stats = solver.getStats();
+      gatherStats(stats);
+      if (stats.depth > currentDepth) {
+        break;
+      }
+    }
     setSolutions(solver.getSolutions());
   }
 

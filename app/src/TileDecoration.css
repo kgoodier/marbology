@@ -4,7 +4,7 @@
   align-items: center;
   position: relative;
   width: 100%;
-  
+
   /*
   grid-column: 1 / 2;
   width: 2.8rem;
@@ -76,4 +76,40 @@
   background: rgb(143, 182, 24);
   box-shadow: inset 1.5rem 1.5rem 2.0rem -0.7rem var(--greyLight-1), inset -.9rem -.5rem 2.0rem var(--shadow), 1.0rem 1.0rem 2.0rem var(--shadow);
   z-index: 4;
+}
+
+.ball.A,
+.ring.A {
+  background-color: red;
+  background: radial-gradient(rgba(var(--red), 0.0) 55%, rgba(var(--red), 0.75) 55.5%, rgb(var(--red)) 51.5%);
+}
+
+.ball.B,
+.ring.B {
+  background-color: cyan;
+  background: radial-gradient(rgba(var(--cyan), 0.0) 55%, rgba(var(--cyan), 0.75) 55.5%, rgb(var(--cyan)) 51.5%);
+}
+
+.ball.C,
+.ring.C {
+  background-color: green;
+  background: radial-gradient(rgba(var(--green), 0.0) 55%, rgba(var(--green), 0.75) 55.5%, rgb(var(--green)) 51.5%);
+}
+
+.ball.D,
+.ring.D {
+  background-color: blue;
+  background: radial-gradient(rgba(var(--blue), 0.0) 55%, rgba(var(--blue), 0.75) 55.5%, rgb(var(--blue)) 51.5%);
+}
+
+.ball.E,
+.ring.E {
+  background-color: magenta;
+  background: radial-gradient(rgba(var(--magenta), 0.0) 55%, rgba(var(--magenta), 0.75) 55.5%, rgb(var(--magenta)) 51.5%);
+}
+
+.ball.F,
+.ring.F {
+  background-color: yellow;
+  background: radial-gradient(rgba(var(--yellow), 0.0) 55%, rgba(var(--yellow), 0.75) 55.5%, rgb(var(--yellow)) 51.5%);
 }

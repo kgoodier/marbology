@@ -28,6 +28,10 @@
   padding: .2em;
 }
 
+.App-container {
+  flex-grow: 1;
+}
+
 /* Neumorphic https://codepen.io/myacode/pen/PoqQQNM */
 
 /*

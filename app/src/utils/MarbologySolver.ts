@@ -122,7 +122,7 @@ export default class MarbologySolver {
         };
         if (statesToSearchSet.has(record)) {
           node.itemStyle = { color: 'lightgreen' };
-          node.tooltip = "to be explored";
+          node.tooltip = { formatter: 'to be explored' };
         }
         return node;
       }

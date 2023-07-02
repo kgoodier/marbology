@@ -20,7 +20,7 @@ function ringColor(c: string): string {
 }
 
 // x and y are 1-based, to match CSS grid.
-export default function TileDecoration({x, y, tile}: PropsWithChildren<{x: number, y: number, tile: TileState}>) {
+export default function TileDecoration({ x, y, tile }: PropsWithChildren<{ x: number, y: number, tile: TileState }>) {
   if (tile.isEmpty) {
     return null;
   }
@@ -28,7 +28,7 @@ export default function TileDecoration({x, y, tile}: PropsWithChildren<{x: numbe
   function Ring() {
     if (tile.divotColor && tile.divotColor !== 'Z') {
       return (
-        <div className="ring" style={{ background: ringColor(tile.divotColor) }} />
+        <div className={`ring ${tile.divotColor}`} />
       );
     } else {
       return null;
@@ -38,7 +38,7 @@ export default function TileDecoration({x, y, tile}: PropsWithChildren<{x: numbe
   function Ball() {
     if (tile.ballColor) {
       return (
-        <div className="ball" style={{ background: ballColor(tile.ballColor) }} />
+        <div className={`ball ${tile.ballColor}`} />
       );
     } else {
       return null;
@@ -60,11 +60,11 @@ export default function TileDecoration({x, y, tile}: PropsWithChildren<{x: numbe
   return (
     <div className={className} style={style}>
       <Ring />
-      {tile.divotColor ? (<div className="divot"/>) : undefined}
-      {tile.exits[0] ? (<div className="path u"/>) : undefined}
-      {tile.exits[1] ? (<div className="path r"/>) : undefined}
-      {tile.exits[2] ? (<div className="path d"/>) : undefined}
-      {tile.exits[3] ? (<div className="path l"/>) : undefined}
+      {tile.divotColor ? (<div className="divot" />) : undefined}
+      {tile.exits[0] ? (<div className="path u" />) : undefined}
+      {tile.exits[1] ? (<div className="path r" />) : undefined}
+      {tile.exits[2] ? (<div className="path d" />) : undefined}
+      {tile.exits[3] ? (<div className="path l" />) : undefined}
       <Ball />
     </div>
   );

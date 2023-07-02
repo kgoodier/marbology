@@ -34,7 +34,7 @@ export type SolutionState = {
 export type Solutions = {
   name: string,
   children: Array<Solutions>,
-  tooltip?: string,
+  tooltip?: any,
   itemStyle?: any
 };
 

@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TileState } from './utils/types';
-import { defaultBoard, parse } from './utils/AsciiBoard';
+import { defaultBoards, defaultBoard, parse } from './utils/AsciiBoard';
 
 import Board from './Board';
 import MarbologySolver from './utils/MarbologySolver';
@@ -12,8 +12,12 @@ import TileDecoration from './TileDecoration';
 import './App.css';
 
 function App() {
+  console.log(`render App`);
   const [tiles, setTiles] = useState<Array<Array<TileState>>>(parse(defaultBoard));
-  const solver: MarbologySolver = useMemo(() => new MarbologySolver(tiles), []);
+  const solver: MarbologySolver = useMemo(() => {
+    console.log(`Creating solver`);
+    return new MarbologySolver(tiles);
+  }, [tiles]);
 
   const handleSelectBoard = useCallback((name: string) => {
     const board = solver.getBoard(name);
@@ -21,6 +25,12 @@ function App() {
       setTiles(board.board.tiles);
     }
   }, [solver]);
+
+  const handleBoardChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    const i = parseInt(event.target.value);
+    const board = defaultBoards[i];
+    setTiles(parse(board[1]));
+  }, []);
 
   return (
     <div className="App">
@@ -31,10 +41,19 @@ function App() {
       </header>
 
       <div className="App-body">
-        <Board>
-          <Tiles tiles={tiles} />
-          <TileDecorations tiles={tiles} />
-        </Board>
+        <div className="App-container">
+          <Board>
+            <Tiles tiles={tiles} />
+            <TileDecorations tiles={tiles} />
+          </Board>
+          <div>
+            <select onChange={handleBoardChange}>
+              {defaultBoards.map((board, index) => (
+                <option key={board[0]} value={index}>{board[0]}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <SolverUI solver={solver} onSelectBoard={handleSelectBoard} />
       </div>
 

@@ -36,13 +36,52 @@ export default function TileDecoration({ x, y, tile }: PropsWithChildren<{ x: nu
   }
 
   function Ball() {
-    if (tile.ballColor) {
+    if (tile.ballColor && tile.ballColor !== 'Z') {
       return (
         <div className={`ball ${tile.ballColor}`} />
       );
     } else {
       return null;
     }
+  }
+
+  function Divot() {
+    return tile.divotColor ? (<div className="divot" />) : null;
+  }
+
+  function Paths() {
+    if (tile.divotColor) {
+      // 1x1 or 1x2 tile with a divot
+      return (
+        <>
+          {tile.exits[0] ? (<div className="path u" />) : undefined}
+          {tile.exits[1] ? (<div className="path r" />) : undefined}
+          {tile.exits[2] ? (<div className="path d" />) : undefined}
+          {tile.exits[3] ? (<div className="path l" />) : undefined}
+        </>
+      );
+    } else if (!tile.siblingDirection) {
+      // 1x1 tile without a divot
+      return (
+        <>
+          {tile.exits[0] ? (<div className="path u" />) : undefined}
+          {tile.exits[1] ? (<div className="path r" />) : undefined}
+          {tile.exits[2] ? (<div className="path d" />) : undefined}
+          {tile.exits[3] ? (<div className="path l" />) : undefined}
+        </>
+      );
+    } else {
+      // 1x2 tile without a divot
+      return (
+        <>
+          {tile.exits[0] ? (<div className="path u" />) : undefined}
+          {tile.exits[1] ? (<div className="path r" />) : undefined}
+          {tile.exits[2] ? (<div className="path d" />) : undefined}
+          {tile.exits[3] ? (<div className="path l" />) : undefined}
+        </>
+      );
+    }
+
   }
 
   let style = {
@@ -60,11 +99,8 @@ export default function TileDecoration({ x, y, tile }: PropsWithChildren<{ x: nu
   return (
     <div className={className} style={style}>
       <Ring />
-      {tile.divotColor ? (<div className="divot" />) : undefined}
-      {tile.exits[0] ? (<div className="path u" />) : undefined}
-      {tile.exits[1] ? (<div className="path r" />) : undefined}
-      {tile.exits[2] ? (<div className="path d" />) : undefined}
-      {tile.exits[3] ? (<div className="path l" />) : undefined}
+      <Divot />
+      <Paths />
       <Ball />
     </div>
   );

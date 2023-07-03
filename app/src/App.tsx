@@ -12,13 +12,8 @@ import TileDecoration from './TileDecoration';
 import './App.css';
 
 function App() {
-  console.log(`render App`);
-  console.log(renderDebug(parse(defaultBoard)));
   const [tiles, setTiles] = useState<Array<Array<TileState>>>(parse(defaultBoard));
-  const solver: MarbologySolver = useMemo(() => {
-    console.log(`Creating solver`);
-    return new MarbologySolver(tiles);
-  }, [tiles]);
+  const [solver, setSolver] = useState<MarbologySolver>(new MarbologySolver(tiles));
 
   const handleSelectBoard = useCallback((name: string) => {
     const board = solver.getBoard(name);
@@ -31,7 +26,7 @@ function App() {
     const i = parseInt(event.target.value);
     const [name, board] = defaultBoards[i];
     const parsedBoard = parse(board);
-    renderDebug(parsedBoard);
+    setSolver(new MarbologySolver(parsedBoard));
     setTiles(parsedBoard);
   }, []);
 

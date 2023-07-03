@@ -78,38 +78,50 @@
   z-index: 4;
 }
 
-.ball.A,
-.ring.A {
+.ball.A {
   background-color: red;
+}
+
+.ring.A {
   background: radial-gradient(rgba(var(--red), 0.0) 55%, rgba(var(--red), 0.75) 55.5%, rgb(var(--red)) 51.5%);
 }
 
-.ball.B,
-.ring.B {
+.ball.B {
   background-color: cyan;
+}
+
+.ring.B {
   background: radial-gradient(rgba(var(--cyan), 0.0) 55%, rgba(var(--cyan), 0.75) 55.5%, rgb(var(--cyan)) 51.5%);
 }
 
-.ball.C,
-.ring.C {
+.ball.C {
   background-color: green;
+}
+
+.ring.C {
   background: radial-gradient(rgba(var(--green), 0.0) 55%, rgba(var(--green), 0.75) 55.5%, rgb(var(--green)) 51.5%);
 }
 
-.ball.D,
-.ring.D {
+.ball.D {
   background-color: blue;
+}
+
+.ring.D {
   background: radial-gradient(rgba(var(--blue), 0.0) 55%, rgba(var(--blue), 0.75) 55.5%, rgb(var(--blue)) 51.5%);
 }
 
-.ball.E,
-.ring.E {
+.ball.E {
   background-color: magenta;
+}
+
+.ring.E {
   background: radial-gradient(rgba(var(--magenta), 0.0) 55%, rgba(var(--magenta), 0.75) 55.5%, rgb(var(--magenta)) 51.5%);
 }
 
-.ball.F,
-.ring.F {
+.ball.F {
   background-color: yellow;
+}
+
+.ring.F {
   background: radial-gradient(rgba(var(--yellow), 0.0) 55%, rgba(var(--yellow), 0.75) 55.5%, rgb(var(--yellow)) 51.5%);
 }

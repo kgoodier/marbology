@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import SolutionTree from './SolutionTree';
 
@@ -10,8 +10,6 @@ import delay from './utils/delay';
 import './SolverUI.css';
 
 const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
-  console.log(`render SolverUI`, solver);
-
   const [status, setStatus] = useState('NotStarted');
   const [message, setMessage] = useState<string | undefined>('');
   const [iterations, setIterations] = useState(0);
@@ -20,6 +18,11 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
   const [depth, setDepth] = useState(0);
   const [unexplored, setUnexplored] = useState(0);
   const [solutions, setSolutions] = useState<Solutions>(solver.getSolutions());
+
+  useEffect(() => {
+    setSolutions(solver.getSolutions());
+    setDepth(solver.getStats().depth);
+  }, [solver]);
 
   function gatherStats(stats: SolverStats) {
     setStatus(stats.status);
@@ -68,6 +71,7 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
     if (solver) {
       const state = solver.getBoard(name);
       if (state) {
+        console.log(`Board ${name}:`);
         console.log(renderDebug(state.board.tiles));
       }
     }

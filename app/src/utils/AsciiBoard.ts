@@ -2,6 +2,24 @@ import { TileState } from './types';
 import assert from './assert';
 
 export const allTilesBoard = `
+..... ..... ........|.. ..|........
+..A-- ..B-- ..E-----Z.. ..+--------
+..... ..... ........... ...........
+                                   
+..... ..... ........... ..|........
+..C-- ..Z-- ..F-----Z.. ..+-----+..
+..... ..|.. ........|.. ........|..
+                                   
+..... ..... ........... ........|..
+--Z-- --Z-- ----------- ..+-----+..
+..... ..|.. ........... ..|........
+                                   
+........... ...........            
+..D-----Z-- ..+--------            
+........... ..|........            
+`;
+
+export const allTilesBoardRotated = `
 ..... ..... ..|.. ..... ..... .....
 ..A.. ..B.. ..Z.. ..D.. ..E.. ..F..
 ..|.. ..|.. ..|.. ..|.. ..|.. ..|..
@@ -9,7 +27,7 @@ export const allTilesBoard = `
 ..... ..... ..|.. ..|.. ..|.. ..|..
 ..C.. --Z.. --Z.. ..Z.. ..Z-- --Z..
 ..|.. ..|.. ..|.. ..|.. ..... .....
-
+                                   
 ..|.. ..... ..... ..... .....      
 ..|.. ..+-- --+.. ..+-- --+..      
 ..|.. ..|.. ..|.. ..|.. ..|..      
@@ -127,17 +145,18 @@ export const defaultBoard000_debugging2 = `
 ..... ........... ..... ..... .....
 `;
 
-export const defaultBoard = defaultBoard001_num1;
-
 export const defaultBoards = [
+  ['All tiles, no balls', allTilesBoard],
+  ['All tiles, no balls, rotated', allTilesBoardRotated],
   ['Debug 0 v1 [dbg]', defaultBoard000_debugging],
   ['Debug 0 v2 [dbg]', defaultBoard000_debugging2],
   ['Problem #1', defaultBoard001_num1],
   ['Problem #1 [dbg mid]', defaultBoard001Mid],
   ['Problem 41', defaultBoard041],
   ['Problem 41 [dbg]', defaultBoard041_debug1],
-  ['All tiles, no balls', allTilesBoard],
 ];
+
+export const defaultBoard = defaultBoards[0][1]; // first one from above
 
 const TILES_W = 6; // tiles
 const TILES_H = 4; // tiles

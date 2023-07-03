@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TileState } from './utils/types';
-import { defaultBoards, defaultBoard, parse } from './utils/AsciiBoard';
+import { defaultBoards, defaultBoard, parse, renderDebug } from './utils/AsciiBoard';
 
 import Board from './Board';
 import MarbologySolver from './utils/MarbologySolver';
@@ -13,6 +13,7 @@ import './App.css';
 
 function App() {
   console.log(`render App`);
+  console.log(renderDebug(parse(defaultBoard)));
   const [tiles, setTiles] = useState<Array<Array<TileState>>>(parse(defaultBoard));
   const solver: MarbologySolver = useMemo(() => {
     console.log(`Creating solver`);
@@ -28,8 +29,10 @@ function App() {
 
   const handleBoardChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const i = parseInt(event.target.value);
-    const board = defaultBoards[i];
-    setTiles(parse(board[1]));
+    const [name, board] = defaultBoards[i];
+    const parsedBoard = parse(board);
+    renderDebug(parsedBoard);
+    setTiles(parsedBoard);
   }, []);
 
   return (

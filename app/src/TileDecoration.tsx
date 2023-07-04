@@ -3,22 +3,6 @@ import { TileState } from './utils/types';
 
 import './TileDecoration.css'
 
-const palette: Map<string, string> = new Map();
-palette.set('A', '143, 182, 24');
-palette.set('B', '163, 33, 52');
-palette.set('Z', '0, 0, 0');
-const defaultColor = '80, 80, 80';
-
-function ballColor(c: string): string {
-  let p = palette.get(c) ?? defaultColor;
-  return `rgb(${p})`;
-}
-
-function ringColor(c: string): string {
-  let p = palette.get(c) ?? defaultColor;
-  return `radial-gradient(rgba(${p}, 0.0) 55%, rgba(${p}, 0.75) 55.5%, rgb(${p}) 51.5%)`;
-}
-
 // x and y are 1-based, to match CSS grid.
 export default function TileDecoration({ x, y, tile }: PropsWithChildren<{ x: number, y: number, tile: TileState }>) {
   if (tile.isEmpty) {

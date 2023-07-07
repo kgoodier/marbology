@@ -1,12 +1,7 @@
 .tile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: .3rem .3rem .6rem var(--greyLight-2), -.2rem -.2rem .5rem var(--white);
+  /* aspect-ratio is set in code */
   position: relative;
-  border-radius: .5rem;
-
-  margin: 0px;
+  background: var(--greyLight-1);
 }
 
 .tile.vertical {
@@ -14,4 +9,106 @@
   transform-origin: top left;
   transform: rotate(90deg) translateY(-100%);
   */
+}
+
+.tile-border {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 9px;
+  box-shadow: inset 1px 1px 2px .7px var(--greyLight-0), inset -1px -1px 1px .7px var(--greyLight-3);
+}
+
+.ball {
+  position: absolute;
+  height: 65%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: rgb(143, 182, 24);
+  box-shadow: inset 1.5rem 1.5rem 2.0rem -0.7rem var(--greyLight-1), inset -.9rem -.5rem 2.0rem var(--shadow), 1.0rem 1.0rem 2.0rem var(--shadow);
+  z-index: 4;
+}
+
+.ring {
+  position: absolute;
+  z-index: 2;
+  left: 7.5%;
+  top: 7.5%;
+  height: 85%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  /* default, will be overridden */
+  background: radial-gradient(rgba(var(--red), 0.0) 55%, rgba(var(--red), 0.75) 55.5%, rgb(var(--red)) 51.5%);
+}
+
+.divot {
+  position: absolute;
+  left: 25%;
+  top: 25%;
+  height: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  box-shadow: inset .9rem .9rem 2.5rem var(--greyLight-3), inset -.4rem -.5rem 1.0rem var(--white), 0rem 0rem .1rem var(--greyLight-2);
+  z-index: 2;
+}
+
+.path {
+  position: absolute;
+  width: 28%;
+  height: 20%;
+  background: var(--greyLight-1);
+  box-shadow: inset 0rem .6rem 1.0rem -.5rem var(--greyLight-3), inset 0rem -.6rem 1.0rem -.5rem var(--white), 0rem -1rem 0rem var(--greyLight-1), 0rem 1rem 0rem var(--greyLight-1);
+  z-index: 3;
+}
+
+
+
+
+.ball.A {
+  background-color: red;
+}
+
+.ring.A {
+  background: radial-gradient(rgba(var(--red), 0.0) 55%, rgba(var(--red), 0.75) 55.5%, rgb(var(--red)) 51.5%);
+}
+
+.ball.B {
+  background-color: cyan;
+}
+
+.ring.B {
+  background: radial-gradient(rgba(var(--cyan), 0.0) 55%, rgba(var(--cyan), 0.75) 55.5%, rgb(var(--cyan)) 51.5%);
+}
+
+.ball.C {
+  background-color: green;
+}
+
+.ring.C {
+  background: radial-gradient(rgba(var(--green), 0.0) 55%, rgba(var(--green), 0.75) 55.5%, rgb(var(--green)) 51.5%);
+}
+
+.ball.D {
+  background-color: blue;
+}
+
+.ring.D {
+  background: radial-gradient(rgba(var(--blue), 0.0) 55%, rgba(var(--blue), 0.75) 55.5%, rgb(var(--blue)) 51.5%);
+}
+
+.ball.E {
+  background-color: magenta;
+}
+
+.ring.E {
+  background: radial-gradient(rgba(var(--magenta), 0.0) 55%, rgba(var(--magenta), 0.75) 55.5%, rgb(var(--magenta)) 51.5%);
+}
+
+.ball.F {
+  background-color: yellow;
+}
+
+.ring.F {
+  background: radial-gradient(rgba(var(--yellow), 0.0) 55%, rgba(var(--yellow), 0.75) 55.5%, rgb(var(--yellow)) 51.5%);
 }

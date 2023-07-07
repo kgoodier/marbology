@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { TileState } from './utils/types';
 
-import './TileDecoration.css'
+//import './TileDecoration.css'
 
 // x and y are 1-based, to match CSS grid.
 export default function TileDecoration({ x, y, tile }: PropsWithChildren<{ x: number, y: number, tile: TileState }>) {

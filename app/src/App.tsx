@@ -42,7 +42,6 @@ function App() {
         <div className="App-container">
           <Board>
             <Tiles tiles={tiles} />
-            <TileDecorations tiles={tiles} />
           </Board>
           <div>
             <select onChange={handleBoardChange}>

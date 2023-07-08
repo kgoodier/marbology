@@ -22,7 +22,7 @@ export default function Tile({ x, y, tile }: PropsWithChildren<{ x: number, y: n
 
   let className = 'tile';
   if (tile.siblingDirection === 'bottom') {
-    className += ' vertical';
+    className += ' v';
   }
 
   return (
@@ -76,36 +76,18 @@ function Divot({ divotColor }: { divotColor?: string }) {
 }
 
 function Paths({ tile }: { tile: TileState }) {
-  if (tile.divotColor) {
-    // 1x1 or 1x2 tile with a divot
-    return (
-      <div className="path-base">
-        {tile.exits[0] ? (<div className="path v u" />) : undefined}
-        {tile.exits[1] ? (<div className="path h r" />) : undefined}
-        {tile.exits[2] ? (<div className="path v d" />) : undefined}
-        {tile.exits[3] ? (<div className="path h l" />) : undefined}
-      </div>
-    );
-  } else if (!tile.siblingDirection) {
-    // 1x1 tile without a divot
-    return (
-      <div className="path-base">
-        {tile.exits[0] ? (<div className="path v u" />) : undefined}
-        {tile.exits[1] ? (<div className="path h r" />) : undefined}
-        {tile.exits[2] ? (<div className="path v d" />) : undefined}
-        {tile.exits[3] ? (<div className="path h l" />) : undefined}
-      </div>
-    );
-  } else {
-    // 1x2 tile without a divot
-    return (
-      <div className="path-base">
-        {tile.exits[0] ? (<div className="path v u" />) : undefined}
-        {tile.exits[1] ? (<div className="path h r" />) : undefined}
-        {tile.exits[2] ? (<div className="path v d" />) : undefined}
-        {tile.exits[3] ? (<div className="path h l" />) : undefined}
-      </div>
-    );
-  }
-
+  return (
+    <div className="path-base">
+      {tile.exits[0] ? (<div className="path v t" />) : undefined}
+      {tile.exits[1] ? (<div className="path h r" />) : undefined}
+      {tile.exits[2] ? (<div className="path v b" />) : undefined}
+      {tile.exits[3] ? (<div className="path h l" />) : undefined}
+      {tile.exits[1] && tile.exits[3] ? (<div className="path h rl" />) : undefined}
+      {tile.exits[0] && tile.exits[2] ? (<div className="path v tb" />) : undefined}
+      {!tile.divotColor && tile.exits[0] && tile.exits[1] ? (<div className="path corner tr" />) : undefined}
+      {!tile.divotColor && tile.exits[1] && tile.exits[2] ? (<div className="path corner rb" />) : undefined}
+      {!tile.divotColor && tile.exits[2] && tile.exits[3] ? (<div className="path corner bl" />) : undefined}
+      {!tile.divotColor && tile.exits[3] && tile.exits[0] ? (<div className="path corner lt" />) : undefined}
+    </div>
+  );
 }

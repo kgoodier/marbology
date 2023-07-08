@@ -5,21 +5,11 @@
   background: var(--greyLight-1);
 }
 
-.tile.vertical {
+.tile.v {
   /*
   transform-origin: top left;
   transform: rotate(90deg) translateY(-100%);
   */
-}
-
-.border {
-  position: absolute;
-  /* needs to stay on top of the paths */
-  z-index: 5;
-  width: 100%;
-  height: 100%;
-  border-radius: 9px;
-  box-shadow: inset 1px 1px 2px .7px var(--greyLight-0), inset -1px -1px 1px .7px var(--greyLight-3);
 }
 
 .border.sibling.r {
@@ -30,74 +20,59 @@
   box-shadow: none;
 }
 
-/* TODO: u and d */
+.border.sibling.d {
+  height: 200%;
+}
 
-.ball {
-  position: absolute;
-  height: 65%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  background: rgb(143, 182, 24);
-  box-shadow: inset 1.5rem 1.5rem 2.0rem -0.7rem var(--greyLight-1), inset -.9rem -.5rem 2.0rem var(--shadow), 1.0rem 1.0rem 2.0rem var(--shadow);
-  z-index: 4;
+.border.sibling.u {
+  box-shadow: none;
 }
 
 .ring {
+  z-index: 1;
   position: absolute;
-  z-index: 2;
   left: 7.5%;
   top: 7.5%;
   height: 85%;
-  aspect-ratio: 1 / 1;
+  width: 85%;
   border-radius: 50%;
   /* default, will be overridden */
-  background: radial-gradient(rgba(var(--red), 0.0) 55%, rgba(var(--red), 0.75) 55.5%, rgb(var(--red)) 51.5%);
+  background: radial-gradient(rgba(var(--red), 0.0) 55%,
+      rgba(var(--red), 0.75) 55.5%,
+      rgb(var(--red)) 51.5%);
 }
 
-.divot {
-  position: absolute;
-  left: 25%;
-  top: 25%;
-  height: 50%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  box-shadow: inset .9rem .9rem 2.5rem var(--greyLight-3), inset -.4rem -.5rem 1.0rem var(--white), 0rem 0rem .1rem var(--greyLight-2);
+.path-base {
   z-index: 2;
+  position: absolute;
+  height: 100%;
+  width: 100%;
 }
 
 .path.h {
+  z-index: inherit;
   position: absolute;
   width: 26.5%;
   height: 20%;
-  background: var(--greyLight-1);
-  /*
-  box-shadow: inset 0rem .6rem 1.0rem -.5rem var(--greyLight-3), inset 0rem -.6rem 1.0rem -.5rem var(--white), 0rem -1rem 0rem var(--greyLight-1), 0rem 1rem 0rem var(--greyLight-1);
-  */
+  background-color: var(--greyLight-1);
   box-shadow:
-    inset 0em 6px 1.0em -.5em var(--greyLight-3),
-    inset 0em -6px 1.0em -.5em var(--white),
-    0em -10px 0em var(--greyLight-1),
-    0em 10px 0em var(--greyLight-1);
-  z-index: 3;
+    inset 0px 6px 1.0em -.5em var(--greyLight-3),
+    inset 0px -6px 1.0em -.5em var(--white),
+    0px -10px 0em var(--greyLight-1),
+    0px 10px 0em var(--greyLight-1);
 }
 
 .path.v {
+  z-index: inherit;
   position: absolute;
   width: 20%;
   height: 26.5%;
-  background: var(--greyLight-1);
-  box-shadow: inset .6rem 0rem 1.0rem -.5rem var(--greyLight-3), inset -.6rem 0rem 1.0rem -.5rem var(--white);
-  z-index: 3;
-}
-
-.path.v.u {
-  left: 40%;
-  top: 0px;
-}
-
-.path.v.d {
-  left: 40%;
-  bottom: 0px;
+  background-color: var(--greyLight-1);
+  box-shadow:
+    inset 6px 0px 1.0em -.5em var(--greyLight-3),
+    inset -6px 0px 1.0em -.5em var(--white),
+    -10px 0px 0em var(--greyLight-1),
+    10px 0px 0em var(--greyLight-1);
 }
 
 .path.h.r {
@@ -110,8 +85,119 @@
   left: 0px;
 }
 
+.path.h.rl {
+  width: 100%;
+  top: 40%;
+  box-shadow:
+    inset 0px 6px 1.0em -.5em var(--greyLight-3),
+    inset 0px -6px 1.0em -.5em var(--white);
+}
+
+.path.v.t {
+  left: 40%;
+  top: 0px;
+}
+
+.path.v.b {
+  left: 40%;
+  bottom: 0px;
+}
+
+.path.v.tb {
+  height: 100%;
+  left: 40%;
+  box-shadow:
+    inset 6px 0px 1.0rem -.5rem var(--greyLight-3),
+    inset -6px 0px 1.0rem -.5rem var(--white);
+}
+
+.path.corner {
+  position: absolute;
+  width: 68%;
+  height: 68%;
+  border-radius: 50%;
+}
+
+.path.corner.rb {
+  background: radial-gradient(rgba(242, 242, 255, 0) 29%,
+      rgba(250, 250, 255, 0.5) 29%,
+      rgba(190, 200, 228, 1.0) 110%);
+  top: 40%;
+  left: 40%;
+  clip-path: polygon(0% 0%, 50% 0%, 50% 50%, 0% 50%);
+}
+
+.path.corner.lt {
+  background: radial-gradient(rgba(242, 242, 255, 0) 29%,
+      rgba(190, 200, 228, 0.5) 29%,
+      rgba(250, 250, 255, 1.0) 85%);
+  right: 40%;
+  bottom: 40%;
+  clip-path: polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%);
+}
+
+.path.corner.tr {
+  background: radial-gradient(rgba(242, 242, 255, 0) 29%,
+      rgba(190, 200, 228, 0.5) 29%,
+      rgba(250, 250, 255, 1.0) 85%);
+  left: 40%;
+  bottom: 40%;
+  clip-path: polygon(0% 50%, 50% 50%, 50% 100%, 0% 100%);
+}
+
+.path.corner.bl {
+  background: radial-gradient(rgba(242, 242, 255, 0) 29%,
+      rgba(190, 200, 228, 0.5) 29%,
+      rgba(250, 250, 255, 1.0) 85%);
+  right: 40%;
+  top: 40%;
+  clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+}
 
 
+.divot {
+  /* above the paths, so it can cover them when present... but it doesn't look quite right? */
+  z-index: 3;
+  position: absolute;
+  left: 25%;
+  top: 25%;
+  height: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: var(--greyLight-0);
+  box-shadow:
+    inset .9rem .9rem 2.5rem var(--greyLight-3),
+    inset -.4rem -.5rem 1.0rem var(--white),
+    0rem 0rem .1rem var(--greyLight-2);
+}
+
+.border {
+  /* needs to stay on top of the paths */
+  z-index: 4;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 9px;
+  box-shadow:
+    inset 1px 1px 2px .7px var(--greyLight-0),
+    inset -1px -1px 1px .7px var(--greyLight-3);
+}
+
+.ball {
+  /* on top of it all */
+  z-index: 5;
+  position: absolute;
+  height: 65%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: rgb(143, 182, 24);
+  box-shadow:
+    inset 1.5rem 1.5rem 2.0rem -0.7rem var(--greyLight-1),
+    inset -.9rem -.5rem 2.0rem var(--shadow),
+    1.0rem 1.0rem 2.0rem var(--shadow);
+}
+
+/* Colors */
 
 .ball.A {
   background-color: red;

@@ -1,5 +1,6 @@
 .tile {
   /* aspect-ratio is set in code */
+  aspect-ratio: 1 / 1;
   position: relative;
   background: var(--greyLight-1);
 }
@@ -11,14 +12,25 @@
   */
 }
 
-.tile-border {
+.border {
   position: absolute;
-  z-index: 1;
+  /* needs to stay on top of the paths */
+  z-index: 5;
   width: 100%;
   height: 100%;
   border-radius: 9px;
   box-shadow: inset 1px 1px 2px .7px var(--greyLight-0), inset -1px -1px 1px .7px var(--greyLight-3);
 }
+
+.border.sibling.r {
+  width: 200%;
+}
+
+.border.sibling.l {
+  box-shadow: none;
+}
+
+/* TODO: u and d */
 
 .ball {
   position: absolute;
@@ -53,13 +65,49 @@
   z-index: 2;
 }
 
-.path {
+.path.h {
   position: absolute;
-  width: 28%;
+  width: 26.5%;
   height: 20%;
   background: var(--greyLight-1);
+  /*
   box-shadow: inset 0rem .6rem 1.0rem -.5rem var(--greyLight-3), inset 0rem -.6rem 1.0rem -.5rem var(--white), 0rem -1rem 0rem var(--greyLight-1), 0rem 1rem 0rem var(--greyLight-1);
+  */
+  box-shadow:
+    inset 0em 6px 1.0em -.5em var(--greyLight-3),
+    inset 0em -6px 1.0em -.5em var(--white),
+    0em -10px 0em var(--greyLight-1),
+    0em 10px 0em var(--greyLight-1);
   z-index: 3;
+}
+
+.path.v {
+  position: absolute;
+  width: 20%;
+  height: 26.5%;
+  background: var(--greyLight-1);
+  box-shadow: inset .6rem 0rem 1.0rem -.5rem var(--greyLight-3), inset -.6rem 0rem 1.0rem -.5rem var(--white);
+  z-index: 3;
+}
+
+.path.v.u {
+  left: 40%;
+  top: 0px;
+}
+
+.path.v.d {
+  left: 40%;
+  bottom: 0px;
+}
+
+.path.h.r {
+  top: 40%;
+  right: 0px;
+}
+
+.path.h.l {
+  top: 40%;
+  left: 0px;
 }
 
 

@@ -156,7 +156,8 @@ export const defaultBoards = [
   ['Problem 41 [dbg]', defaultBoard041_debug1],
 ];
 
-export const defaultBoard = defaultBoards[0][1]; // first one from above
+export const defaultBoardIndex = 4;
+export const defaultBoard = defaultBoards[defaultBoardIndex][1];
 
 const TILES_W = 6; // tiles
 const TILES_H = 4; // tiles

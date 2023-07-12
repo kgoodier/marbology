@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TileState } from './utils/types';
-import { defaultBoards, defaultBoard, parse, renderDebug } from './utils/AsciiBoard';
+import * as AsciiBoard from './utils/AsciiBoard';
 
 import Board from './Board';
 import MarbologySolver from './utils/MarbologySolver';
@@ -12,7 +12,7 @@ import TileDecoration from './TileDecoration';
 import './App.css';
 
 function App() {
-  const [tiles, setTiles] = useState<Array<Array<TileState>>>(parse(defaultBoard));
+  const [tiles, setTiles] = useState<Array<Array<TileState>>>(AsciiBoard.parse(AsciiBoard.defaultBoard));
   const [solver, setSolver] = useState<MarbologySolver>(new MarbologySolver(tiles));
 
   const handleSelectBoard = useCallback((name: string) => {
@@ -24,8 +24,8 @@ function App() {
 
   const handleBoardChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const i = parseInt(event.target.value);
-    const [name, board] = defaultBoards[i];
-    const parsedBoard = parse(board);
+    const [name, board] = AsciiBoard.defaultBoards[i];
+    const parsedBoard = AsciiBoard.parse(board);
     setSolver(new MarbologySolver(parsedBoard));
     setTiles(parsedBoard);
   }, []);
@@ -45,8 +45,8 @@ function App() {
           </Board>
           <div>
             <select onChange={handleBoardChange}>
-              {defaultBoards.map((board, index) => (
-                <option key={board[0]} value={index}>{board[0]}</option>
+              {AsciiBoard.defaultBoards.map((board, index) => (
+                <option key={board[0]} value={index} selected={index === AsciiBoard.defaultBoardIndex}>{board[0]}</option>
               ))}
             </select>
           </div>

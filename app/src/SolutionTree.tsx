@@ -3,6 +3,8 @@ import React, { PropsWithChildren, memo, useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Solutions } from './utils/types';
 
+import './SolutionTree.css';
+
 type SolutionTreeProps = {
   solutions?: Solutions,
   onSelect?: (name: string) => void,
@@ -10,6 +12,8 @@ type SolutionTreeProps = {
 };
 
 const SolutionTree = memo(function SolutionTree({ solutions, onSelect, onDebug }: SolutionTreeProps) {
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+
   if (!solutions) {
     return null;
   }
@@ -81,60 +85,53 @@ const SolutionTree = memo(function SolutionTree({ solutions, onSelect, onDebug }
         }
       ]
     };
+
+    return <ReactECharts
+      option={options}
+      style={{ height: '100%', width: '100%' }}
+      onEvents={{
+        'mouseover': handleSelect,
+        'click': handleDebugInfo,
+      }}
+    />;
   } else {
     // Render the tree as a list (straight line). wtf is the real name.
-    const nodes = [];
+    const nodes: Array<string> = [];
     const links = [];
     let solution = solutions;
     while (solution) {
-      nodes.push({ name: solution.name });
+      nodes.push(solution.name);
       if (solution.children.length > 0) {
         links.push({ source: solution.name, target: solution.children[0].name });
       }
       solution = solution.children[0];
     }
 
-    options = {
-      tooltip: {
-        show: false,
-        trigger: 'item',
-        triggerOn: 'click'
-      },
-      series: [
-        {
-          name: 'Marbology',
-          type: 'graph',
-          layout: 'force',
-          data: nodes,
-          links: links,
-          symbol: 'emptyCircle',
-          symbolSize: 20,
-          roam: false,
-          label: {
-            show: true,
-            position: 'inside',
-            verticalAlign: 'middle',
-            fontSize: 9
-          },
-          force: {
-            repulsion: 100
-          }
-        }
-      ]
-    };
+    function handleSelected(index: number) {
+      setSelected(index);
+      onSelect && onSelect(nodes[index]);
+    }
 
+    console.log(`render, selected=${selected}`);
+    const solutionDivs = nodes.map((name, index) => {
+      let className = `solution-node`;
+      if (selected !== undefined) {
+        const distance = Math.min(6, Math.abs(selected - index));
+        console.log(`distance=${distance}`);
+        className += ` s${distance}`;
+      }
+      return (
+        <div key={name} className={className} onMouseEnter={() => handleSelected(index)} onClick={() => onDebug && onDebug(name)}>
+          {index}
+        </div >);
+    });
 
+    return (
+      <div className='solution-container'>
+        {solutionDivs}
+      </div>
+    )
   }
-
-
-  return <ReactECharts
-    option={options}
-    style={{ height: '100%', width: '100%' }}
-    onEvents={{
-      'mouseover': handleSelect,
-      'click': handleDebugInfo,
-    }}
-  />;
 });
 
 export default SolutionTree;

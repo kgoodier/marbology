@@ -44,9 +44,9 @@ function App() {
             <Tiles tiles={tiles} />
           </Board>
           <div>
-            <select onChange={handleBoardChange}>
+            <select defaultValue={AsciiBoard.defaultBoardIndex} onChange={handleBoardChange}>
               {AsciiBoard.defaultBoards.map((board, index) => (
-                <option key={board[0]} value={index} selected={index === AsciiBoard.defaultBoardIndex}>{board[0]}</option>
+                <option key={board[0]} value={index}>{board[0]}</option>
               ))}
             </select>
           </div>

@@ -1,25 +1,63 @@
 .solution-container {
   position: absolute;
-  width: 100px;
+  width: 150px;
   height: 300px;
   margin: auto;
   padding: 1px 10px 1px 10px;
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
 }
 
-.solution-node {
+.solution-node-container {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.solution-level {
   font-size: 10px;
   cursor: pointer;
   height: 20px;
   width: 100%;
   background-color: #add8e6;
+  background-color: red;
   border: #92bdcb solid 1px;
   border-radius: 3px;
   transition: 200ms;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solution-node {
+  flex: 1 1 50%;
+  height: 100%;
+  padding: 1px 1px 1px 1px;
+  transition: 100ms;
+}
+
+.solution-node:hover {
+  transform: scale(120%);
+}
+
+.solution-node.name {
+  background-color: #add8e6;
+  border: black solid 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solution-node.child {
+  background-color: #add8e6;
+  background-color: cornflowerblue;
+  border: black solid 1px;
+  border-radius: 3px;
 
   display: flex;
   align-items: center;

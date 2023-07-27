@@ -1,7 +1,5 @@
-import * as AsciiBoard from './AsciiBoard.js'
-import type { TileState, Move, SolutionState, SolverStats, Solutions } from './types';
+import type { TileState, Move, SolutionState, SolverStats } from './types';
 import BoardConfiguration from './BoardConfiguration';
-import { assert } from 'console';
 
 const verbose = false;
 
@@ -93,6 +91,15 @@ export default class MarbologySolver {
     return { ...this.stats };
   }
 
+  getSolutionPathToWinningState(): SolutionState[] {
+    return this.winningSolution
+  }
+
+  getAllSolutions(): SolutionState {
+    return this.initialState;
+  }
+
+  /*
   getSolutions(): Solutions {
     if (this.winningSolution.length > 0) {
       // We have a solution, so return a single path.
@@ -129,6 +136,7 @@ export default class MarbologySolver {
       return remap(this.initialState);
     }
   }
+  */
 
   getSolutionPath(endState: SolutionState | undefined = this.winningState): Array<SolutionState> {
     const pathToParent: Array<SolutionState> = [];

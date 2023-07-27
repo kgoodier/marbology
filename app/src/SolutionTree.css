@@ -64,6 +64,10 @@
   justify-content: center;
 }
 
+.solution-node.selected {
+  font-weight: bold;
+}
+
 .s0 {
   font-size: 16px;
   opacity: 100%;

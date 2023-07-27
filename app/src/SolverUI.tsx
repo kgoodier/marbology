@@ -1,15 +1,15 @@
 import React, { memo, useEffect, useState } from 'react';
 
+import SolutionList from './SolutionList';
 import SolutionTree from './SolutionTree';
 
 import MarbologySolver from './utils/MarbologySolver';
-import { SolutionState, SolverStats, Solutions } from './utils/types';
+import { SolverStats, SolutionState } from './utils/types';
 import { renderDebug } from './utils/AsciiBoard';
-import delay from './utils/delay';
 
 import './SolverUI.css';
 
-const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: MarbologySolver, onSelectBoard?: (name: string) => void }) {
+const SolverUI = memo(function SolverUI({ solver, onViewBoard }: { solver: MarbologySolver, onViewBoard?: (name: string) => void }) {
   const [status, setStatus] = useState('NotStarted');
   const [message, setMessage] = useState<string | undefined>('');
   const [iterations, setIterations] = useState(0);
@@ -17,10 +17,10 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
   const [branches, setBranches] = useState(0);
   const [depth, setDepth] = useState(0);
   const [unexplored, setUnexplored] = useState(0);
-  const [solutions, setSolutions] = useState<Solutions>(solver.getSolutions());
+  const [winningSolutionPath, setWinningSolutionPath] = useState<SolutionState[]>(solver.getSolutionPathToWinningState());
 
   useEffect(() => {
-    setSolutions(solver.getSolutions());
+    setWinningSolutionPath(solver.getSolutionPathToWinningState());
     setDepth(solver.getStats().depth);
   }, [solver]);
 
@@ -46,25 +46,21 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
         break;
       }
     }
-    setSolutions(solver.getSolutions());
+    setWinningSolutionPath(solver.getSolutionPathToWinningState());
   }
 
   async function run() {
     while (solver.step()) {
       let stats = solver.getStats();
       gatherStats(stats);
-      //setSolutions(solver.getSolutions());
-      //await delay(10);
-      // Safety net
-      if (stats.depth > 20) {
-        setSolutions(solver.getSolutions());
+      // TODO: (remove) Safety net "just in case" it runs too long
+      if (stats.depth > 100) {
+        setWinningSolutionPath(solver.getSolutionPathToWinningState());
         return;
       }
     }
-    console.log(`Winning path:`, solver.getSolutionPath());
-    console.log(`${JSON.stringify(solver.getStats())}`);
     gatherStats(solver.getStats());
-    setSolutions(solver.getSolutions());
+    setWinningSolutionPath(solver.getSolutionPathToWinningState());
   }
 
   function handleDebugBoard(name: string) {
@@ -106,7 +102,10 @@ const SolverUI = memo(function SolverUI({ solver, onSelectBoard }: { solver: Mar
         <div className='stats-value'>{unexplored}</div>
       </div>
       <div className='solver-tree'>
-        <SolutionTree solutions={solutions} onSelect={onSelectBoard} onDebug={handleDebugBoard} />
+        {winningSolutionPath.length > 0 ?
+          <SolutionList solutionsPath={winningSolutionPath} onViewBoard={onViewBoard} onSelectBoard={handleDebugBoard} /> :
+          <SolutionTree solutions={solver.getAllSolutions()} onViewBoard={onViewBoard} onSelectBoard={handleDebugBoard} />
+        }
       </div>
     </div>
   );

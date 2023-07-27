@@ -31,12 +31,14 @@ export type SolutionState = {
   move?: Move
 };
 
+/*
 export type Solutions = {
   name: string,
   children: Array<Solutions>,
   tooltip?: any,
   itemStyle?: any
 };
+*/
 
 export type SolverStats = {
   status: 'NotStarted' | 'Running' | 'Done' | 'Error',

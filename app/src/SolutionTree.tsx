@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 
 import { SolutionState } from './utils/types';
 
+import './SolutionList.css';
 import './SolutionTree.css';
 
 type SolutionTreeProps = {
